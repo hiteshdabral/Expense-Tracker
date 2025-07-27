@@ -18,9 +18,14 @@ export const createCategory=async(req:Request,res:Response, next: NextFunction):
 export const getCategories=async(req:Request,res:Response, next: NextFunction):Promise<void>=>{
     try{
         const userId = parseInt(req.params.userId, 10);
+           if (!userId || isNaN(userId)) {
+            res.status(400).json({ message: "Invalid user ID" });
+            return;
+        }
+
         const result=await pool.query("SELECT * FROM categories WHERE user_id=$1",[userId])
-        const categories=result.rows[0]
-        res.status(200).json({categories})
+        // const categories=result.rows[0]
+        res.status(200).json(result.rows)
     }catch(error){
         res.status(500).json({message:"Internal server error"})
     }

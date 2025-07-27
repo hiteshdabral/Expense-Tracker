@@ -1,4 +1,17 @@
-body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Add this to test if global CSS is working */
+.dashboard-cards {
+  display: flex !important;
+  flex-direction: row !important;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.dashboard-card {
+  flex: 1;
+  min-width: 250px;
+  max-width: 33%;
 }

@@ -22,3 +22,13 @@ CREATE TABLE IF NOT EXISTS expenses(
     description TEXT,
     date DATE DEFAULT CURRENT_DATE
 );
+
+CREATE TABLE IF NOT EXISTS transactions(
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    amount NUMERIC NOT NULL,
+    type VARCHAR(10) CHECK (type in ("income","expense")) NOT NULL,
+    date DATE NOT NULL,
+    category_id INTEGER REFERENCES categories(id),
+    user_id INTEGER REFERENCES users(id)
+)

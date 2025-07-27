@@ -14,24 +14,37 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true); // ✅ loading state
+  const [loading, setLoading] = useState(true);
 
-  const login = (userData: User) => {
+  const login = async (userData: User) => {
     setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData));
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem("user");
+  const logout = async () => {
+    try {
+      // Call logout API to clear cookies
+      await fetch('/api/auth/logout', { method: 'POST' });
+      setUser(null);
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setLoading(false); // ✅ mark loading as false after checking localStorage
+    // Get user from cookie on initial load
+    const getCookieUser = () => {
+      const userCookie = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('user='));
+      
+      if (userCookie) {
+        const userData = JSON.parse(decodeURIComponent(userCookie.split('=')[1]));
+        setUser(userData);
+      }
+      setLoading(false);
+    };
+
+    getCookieUser();
   }, []);
 
   return (

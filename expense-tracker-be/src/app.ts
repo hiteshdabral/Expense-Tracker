@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import authRoutes from "./routes/auth";
 import categoryRoutes from "./routes/category"
 import expenseRoutes from "./routes/expense"
+import transactionRoutes from "./routes/transaction"
 
 
 dotenv.config();
@@ -23,6 +24,7 @@ app.use(express.json());
 app.use("/api/auth",authRoutes)
 app.use("/api/category",categoryRoutes)
 app.use("/api/expense",expenseRoutes)
+app.use("/api/transactions",transactionRoutes);
 
 
 
