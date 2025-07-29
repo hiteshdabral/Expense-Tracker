@@ -14,7 +14,7 @@
     "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
     "build": "tsc",
     "start": "node dist/app.js",
-    "migrate": "ts-node dist/db/runMigrations.js"
+    "migrate": "ts-node dist/db/runMigration.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",

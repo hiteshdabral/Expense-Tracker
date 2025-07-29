@@ -18,21 +18,25 @@ const hash_1 = require("../utils/hash");
 const jwt_1 = require("../utils/jwt");
 const register = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log("Register Request Body:", req.body);
         const { name, email, password } = req.body;
         const existing = yield db_1.default.query("SELECT * FROM users WHERE email=$1", [email]);
         if (existing.rows.length > 0) {
             res.status(400).json({ message: "User already exists" });
+            return;
         }
         const hashedPassword = yield (0, hash_1.hashPassword)(password);
         const result = yield db_1.default.query("INSERT INTO users (name,email,password) values ($1,$2,$3) RETURNING id,name,email", [name, email, hashedPassword]);
         const user = result.rows[0];
         const token = (0, jwt_1.generateToken)({ id: user.id });
         res.status(201).json({ user, token });
+        return;
     }
     catch (err) {
-        if (err.code) {
+        if (err.code === 409) {
             res.status(409).json({ message: "Email already exists" });
         }
+        console.error("Register Route Error:", err);
         res.status(500).json({ message: "Internal server error" });
     }
 });
@@ -44,16 +48,19 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
         const user = result.rows[0];
         if (!user) {
             res.status(404).json({ message: "User not found with this email" });
+            return;
         }
         const match = yield (0, hash_1.comparePassword)(password, user.password);
         if (!match) {
             res.status(400).json({ message: "Invalid credentials" });
+            return;
         }
         const token = yield (0, jwt_1.generateToken)({ id: user.id });
         res.json({
             user: { id: user.id, name: user.name, email: user.email },
             token,
         });
+        return;
     }
     catch (err) {
         res.status(500).json({ message: "Internal server error" });
