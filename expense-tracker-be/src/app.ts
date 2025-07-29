@@ -25,6 +25,9 @@ app.use("/api/auth",authRoutes)
 app.use("/api/category",categoryRoutes)
 app.use("/api/expense",expenseRoutes)
 app.use("/api/transactions",transactionRoutes);
+app.get("/health", (req, res) => {
+  res.send("Backend is live");
+});
 
 
 

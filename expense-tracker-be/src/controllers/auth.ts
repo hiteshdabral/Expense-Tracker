@@ -6,6 +6,7 @@ import { User } from "../types/user";
 
 const register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
+        console.log("Register Request Body:", req.body); // This will confirm if request is coming through
     const { name, email, password } = req.body;
     const existing = await pool.query("SELECT * FROM users WHERE email=$1", [email]);
     if (existing.rows.length > 0) {
@@ -25,6 +26,8 @@ const register = async (req: Request, res: Response, next: NextFunction): Promis
     if (err.code===409) {
       res.status(409).json({ message: "Email already exists" });
     }
+        console.error("Register Route Error:", err); // IMPORTANT: this will show the error in Render logs
+
     res.status(500).json({ message: "Internal server error" });
   }
 };
