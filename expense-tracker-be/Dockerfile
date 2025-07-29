@@ -7,17 +7,21 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependency
+# Install dependencies
 RUN npm install
 
-# Copy source code 
+# Copy source code
 COPY . .
 
-#BUILT typescript
+# Build TypeScript
 RUN npm run build
 
-#EXPOSE PORT
+# Expose port
 EXPOSE 5000
 
-# Start app
-CMD ["node","dist/app.js"]
+# Start app with DB migration
+# CMD ["node","dist/app.js"]
+# ⬆️ Old command (commented)
+
+# ✅ Run DB migration first, then start server
+CMD npm run migrate && node dist/app.js
